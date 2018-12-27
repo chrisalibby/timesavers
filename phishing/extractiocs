@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Extract IOCs from EML files using Grep
+# Make all safe, then format acceptable for 
+# copy/paste into report.
+
+# Usage
+
+# download all of the offending email messages in raw/text format.
+# file extensions must be .eml
+# run the script
+# copy/paste to where you need it
+
+echo 'Extracted IoCs:'
+echo ''
+echo 'From:'
+grep -h 'From:' *.eml | grep -v 'X-Barracuda-Envelope-From:' | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b" | uniq | sed 's%\@%[\@]%g'
+echo ''
+echo 'To:'
+grep -h 'To:' *.eml | grep -v 'Reply-To:' | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b" | uniq | sed 's%\@%[\@]%g'
+echo ''
+echo 'URLs:'
+grep -Eoh 'http(s?):\/\/[^ \"\(\)\<\>]*' *.eml | sort | uniq | sed 's%http%hxxp%g' | sed 's%:%[:]%g' | sed 's%\.%[\.]%g'
+echo ''
+
+
